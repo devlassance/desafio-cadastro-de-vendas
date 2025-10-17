@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\SellerNotFoundException;
 use App\Http\Requests\Seller\CreateSellerRequest;
 use App\Services\Seller\CreateSellersService;
 use App\Services\Seller\GetSellersService;
@@ -48,8 +49,14 @@ class SellerController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param int $id
+     * @return JsonResponse
+     *
+     * @throws SellerNotFoundException
+     * @throws Exception
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
         return response()->json($this->getSellersWithSalesService->execute($id));
     }

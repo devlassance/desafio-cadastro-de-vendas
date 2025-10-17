@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SellerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,3 +15,5 @@ Route::group(['prefix' => 'sellers'], function () {
     Route::post('/', [SellerController::class, 'store']);
     Route::get('/{id}', [SellerController::class, 'show']);
 });
+
+Route::get('sales', SaleController::class);
