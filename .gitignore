@@ -1,0 +1,12 @@
+# Node
+frontend/app/node_modules
+frontend/app/.vite
+frontend/app/dist
+
+# PHP / Composer
+backend/src/vendor
+backend/app/.env
+
+# Docker
+*.log
+**/.DS_Store
