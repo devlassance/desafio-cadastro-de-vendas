@@ -14,4 +14,15 @@ class SellerRepository extends BaseRepository implements SellerRepositoryContrac
     {
         $this->model = $model;
     }
+
+    /**
+     * Find a seller by id with sales eager loaded.
+     *
+     * @param int|string $id
+     * @return Seller|null
+     */
+    public function findWithSales($id): ?Seller
+    {
+        return $this->model->with('sales')->find($id);
+    }
 }

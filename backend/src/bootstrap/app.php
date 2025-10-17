@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,5 +16,23 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Validation Error',
+                    'errors' => $e->errors(),
+                ], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        });
+
+
+        $exceptions->render(function (\Throwable $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Erro interno do servidor',
+                    'error' => config('app.debug') ? $e->getMessage() : null,
+                ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        });
     })->create();

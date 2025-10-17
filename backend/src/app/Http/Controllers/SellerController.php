@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Seller\CreateSellerRequest;
+use App\Services\Seller\CreateSellersService;
 use App\Services\Seller\GetSellersService;
+use App\Services\Seller\GetSellersWithSalesService;
+use Exception;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class SellerController extends Controller
 {
     public function __construct(
-        private GetSellersService $getSellersService
+        private GetSellersService $getSellersService,
+        private CreateSellersService $createSellersService,
+        private GetSellersWithSalesService $getSellersWithSalesService
     )
     {
     }
@@ -25,18 +32,26 @@ class SellerController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param CreateSellerRequest $request
+     * @return JsonResponse
+     *
+     * @throws ValidationException
+     * @throws Exception
      */
-    public function store(Request $request)
+    public function store(CreateSellerRequest $request): JsonResponse
     {
-        //
+        $data = $request->validated();
+        $this->createSellersService->execute($data);
+        return response()->json(['message' => 'Seller created successfully'], ResponseAlias::HTTP_CREATED);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
-        //
+        return response()->json($this->getSellersWithSalesService->execute($id));
     }
 
 }

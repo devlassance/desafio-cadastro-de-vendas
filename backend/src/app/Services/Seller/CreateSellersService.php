@@ -4,28 +4,27 @@ namespace App\Services\Seller;
 
 use App\Repositories\Seller\Contract\SellerRepositoryContract;
 use Exception;
-use Illuminate\Support\Collection;
 
-class GetSellersService
+class CreateSellersService
 {
     public function __construct(
         private SellerRepositoryContract $sellerRepository
     )
     {
-        //
+
     }
 
     /**
-     * @return Collection
+     * @param array $data
      *
      * @throws Exception
      */
-    public function execute(): Collection
+    public function execute(array $data): void
     {
         try {
-            return $this->sellerRepository->getAll();
+            $this->sellerRepository->create($data);
         } catch (Exception $e) {
-            throw new Exception('Error retrieving sellers: ' . $e->getMessage());
+            throw new Exception('Error creating seller: ' . $e->getMessage());
         }
     }
 }
