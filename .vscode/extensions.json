@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "eamodio.gitlens",
+    "msjsdiag.debugger-for-chrome",
+    "christian-kohler.path-intellisense",
+    "eg2.vscode-npm-script"
+  ]
+}
