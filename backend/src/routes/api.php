@@ -16,4 +16,10 @@ Route::group(['prefix' => 'sellers'], function () {
     Route::get('/{id}', [SellerController::class, 'show']);
 });
 
-Route::get('sales', SaleController::class);
+
+Route::group(['prefix' => 'sales'], function () {
+    Route::get('/', [SaleController::class, 'index']);
+    Route::post('/', [SaleController::class, 'store']);
+});
+
+

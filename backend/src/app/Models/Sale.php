@@ -16,7 +16,7 @@ class Sale extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['amount', 'date', 'seller_id'];
+    protected $fillable = ['amount', 'commission', 'sale_date', 'seller_id'];
 
     /**
      * The attributes that should be cast.
@@ -25,7 +25,8 @@ class Sale extends Model
      */
     protected $casts = [
         'amount' => 'decimal:2',
-        'date' => 'datetime',
+        'commission' => 'decimal:2',
+        'sale_date' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
