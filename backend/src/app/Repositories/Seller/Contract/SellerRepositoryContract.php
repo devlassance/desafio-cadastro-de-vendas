@@ -4,6 +4,7 @@ namespace App\Repositories\Seller\Contract;
 
 use App\Models\Seller;
 use App\Repositories\Contract\BaseRepositoryContract;
+use Illuminate\Support\Collection;
 
 interface SellerRepositoryContract extends BaseRepositoryContract
 {
@@ -15,5 +16,12 @@ interface SellerRepositoryContract extends BaseRepositoryContract
      * @return Seller
      */
     public function findWithSales(int $id): Seller;
+
+    /**
+     * Get all sellers for select input.
+     *
+     * @return Collection
+     */
+    public function getAllForSelect(): Collection;
 
 }

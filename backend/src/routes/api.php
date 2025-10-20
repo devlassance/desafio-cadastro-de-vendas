@@ -12,6 +12,7 @@ Route::get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'sellers'], function () {
     Route::get('/', [SellerController::class, 'index']);
+    Route::get('/for-select', [SellerController::class, 'showForSelect']);
     Route::post('/', [SellerController::class, 'store']);
     Route::get('/{id}', [SellerController::class, 'show']);
 });

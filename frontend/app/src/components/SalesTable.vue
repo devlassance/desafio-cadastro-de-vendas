@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Sale } from '@/types/sale'
+import type { Sale } from '../types/sale'
 
 defineProps<{ sales: Sale[] }>()
 
@@ -38,9 +38,3 @@ function formatDate(iso?: string) {
   return d.toLocaleDateString()
 }
 </script>
-
-<style scoped>
-.table { width: 100%; border-collapse: collapse; }
-th, td { border-bottom: 1px solid #3333; padding: .5rem; text-align: left; }
-thead th { background: #f6f6f6; }
-</style>

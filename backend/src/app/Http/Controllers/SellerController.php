@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\SellerNotFoundException;
 use App\Http\Requests\Seller\CreateSellerRequest;
 use App\Services\Seller\CreateSellersService;
+use App\Services\Seller\GetSellersForSelect;
 use App\Services\Seller\GetSellersService;
 use App\Services\Seller\GetSellersWithSalesService;
 use Exception;
@@ -17,7 +18,8 @@ class SellerController extends Controller
     public function __construct(
         private GetSellersService $getSellersService,
         private CreateSellersService $createSellersService,
-        private GetSellersWithSalesService $getSellersWithSalesService
+        private GetSellersWithSalesService $getSellersWithSalesService,
+        private GetSellersForSelect $getSellersForSelect
     )
     {
     }
@@ -59,6 +61,18 @@ class SellerController extends Controller
     public function show(int $id): JsonResponse
     {
         return response()->json($this->getSellersWithSalesService->execute($id));
+    }
+
+    /**
+     * Display a listing of sellers for select input.
+     *
+     * @return JsonResponse
+     *
+     * @throws Exception
+     */
+    public function showForSelect(): JsonResponse
+    {
+        return response()->json($this->getSellersForSelect->execute());
     }
 
 }

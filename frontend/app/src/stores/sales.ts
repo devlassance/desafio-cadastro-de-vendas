@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import type { Sale } from '@/types/sale'
-import { listSales, createSale, type CreateSalePayload } from '@/services/sales'
+import type { Sale } from '../types/sale'
+import { listSales, createSale, type CreateSalePayload } from '../services/sales'
 
 export const useSalesStore = defineStore('sales', {
   state: () => ({

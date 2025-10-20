@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Repositories\Contract\BaseRepositoryContract;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BaseRepository implements BaseRepositoryContract
 {
@@ -75,8 +76,8 @@ class BaseRepository implements BaseRepositoryContract
         return $this->model->firstOrCreate($array1, $array2);
     }
 
-    public function getAll(): Collection
+    public function getAll(int $totalPages = 10): LengthAwarePaginator
     {
-        return $this->model::all();
+        return $this->model::paginate($totalPages);
     }
 }

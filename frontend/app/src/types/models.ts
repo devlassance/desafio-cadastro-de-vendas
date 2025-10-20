@@ -1,30 +1,13 @@
 export interface Paginated<T> {
-  data: T[]
   current_page: number
-  last_page: number
-  per_page: number
-  total: number
-}
-export interface Seller {
-  id: number
-  name: string
-  email: string
-  created_at?: string
-  updated_at?: string
-}
-
-export interface Sale {
-  id: number
-  seller_id: number
-  value: number
-  created_at?: string
-  updated_at?: string
-}
-
-export interface Paginated<T> {
   data: T[]
-  current_page: number
+  first_page_url: string
+  from: number | null
   last_page: number
+  last_page_url: string
+  next_page_url: string | null
+  prev_page_url: string | null
   per_page: number
+  to: number | null
   total: number
 }

@@ -4,10 +4,11 @@
 <template>
   <div class="container">
     <header>
-      <h1>Sales App</h1>
+      <h2>Sales App</h2>
       <nav>
         <router-link to="/">Home</router-link>
         <router-link to="/sales">Sales</router-link>
+        <router-link to="/seller">Seller</router-link>
       </nav>
     </header>
     <main>

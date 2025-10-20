@@ -4,9 +4,9 @@ namespace App\Services\Seller;
 
 use App\Repositories\Seller\Contract\SellerRepositoryContract;
 use Exception;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
-class GetSellersService
+class GetSellersForSelect
 {
     public function __construct(
         private readonly SellerRepositoryContract $sellerRepository
@@ -16,14 +16,14 @@ class GetSellersService
     }
 
     /**
-     * @return LengthAwarePaginator
+     * @return Collection
      *
-     * @throws Exception
+     * @throws \Exception
      */
-    public function execute(): LengthAwarePaginator
+    public function execute(): Collection
     {
         try {
-            return $this->sellerRepository->getAll();
+            return $this->sellerRepository->getAllForSelect();
         } catch (Exception $e) {
             throw new Exception('Error retrieving sellers: ' . $e->getMessage());
         }

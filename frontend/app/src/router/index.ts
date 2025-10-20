@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
-// Lazy-loaded routes to keep initial bundle small
 const Home = () => import('../components/HelloWorld.vue')
-const Sales = () => import('../views/Sales.vue')
+const Sale = () => import('../views/Sale.vue')
+const Seller = () => import('../views/Seller.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -14,8 +14,15 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/sales',
     name: 'sales',
-    component: Sales,
+    component: Sale,
     meta: { title: 'Sales' }
+  },
+
+  {
+    path: '/seller',
+    name: 'seller',
+    component: Seller,
+    meta: { title: 'Seller' }
   }
 ]
 
@@ -29,7 +36,6 @@ const router = createRouter({
   }
 })
 
-// Optional: update document title per route
 router.afterEach((to) => {
   const base = 'Sales App'
   const title = (to.meta && (to.meta as any).title) || undefined

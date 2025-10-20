@@ -1,6 +1,6 @@
 import api from './api'
-import type { Paginated } from '@/types/models'
-import type { Sale } from '@/types/sale'
+import type { Paginated } from '../types/models'
+import type { Sale } from '../types/sale'
 
 export type CreateSalePayload = {
   amount: number
@@ -8,11 +8,12 @@ export type CreateSalePayload = {
   seller_id: number
 }
 
-export async function listSales() {
-  const { data } = await api.get<Sale[] | Paginated<Sale>>('/sales')
+export async function listSales(page: number = 1): Promise<Sale[]> {
+  const { data } = await api.get<Sale[] | Paginated<Sale>>(`/sales?page=${page}`)
   if (Array.isArray(data)) return data
   return data.data
 }
+
 
 export async function createSale(payload: CreateSalePayload) {
   return api.post('/sales', payload)

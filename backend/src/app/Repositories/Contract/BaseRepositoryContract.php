@@ -4,6 +4,7 @@ namespace App\Repositories\Contract;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface BaseRepositoryContract
 {
@@ -29,5 +30,5 @@ interface BaseRepositoryContract
 
     public function firstOrCreate(array $array1, array $array2): Model;
 
-    public function getAll(): Collection;
+    public function getAll(int $totalPages = 10): LengthAwarePaginator;
 }
