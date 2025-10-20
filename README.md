@@ -1,80 +1,128 @@
-# Cadastro de Vendas — Projeto (Laravel + Vue + MySQL) — Dockerized
+# Cadastro de Vendas — Laravel + Vue + MySQL (Docker)
 
-Este repositório contém um projeto de exemplo para um desafio técnico: um backend em Laravel (PHP-FPM), frontend em Vue 3 (Vite) e banco MySQL. Todos os serviços rodam via Docker Compose e a ideia é que um avaliador consiga rodar a aplicação com um único comando.
+Importante: não basta rodar apenas “docker compose up -d --build”. Após o build, existem passos dentro dos containers para concluir a configuração.
 
-Status: pronto para uso em desenvolvimento. Executar:
+## Stack e serviços
+- Backend: Laravel (PHP-FPM) + Nginx
+- Frontend: Vue 3 + Vite (TypeScript)
+- Banco: MySQL 8
+- Redis: opcional (cache/fila)
 
-```bash
-# Cria as imagens e sobe todos os serviços em background
-docker compose up -d --build
-```
-
-Isso deve deixar os serviços disponíveis em:
-- Backend (Laravel + Nginx): http://localhost:8080
+Portas principais
+- Backend (Nginx + Laravel): http://localhost:8080
 - Frontend (Vite dev server): http://localhost:5173
-- MySQL: 3306 (usuário root / senha root)
-- Redis: 6379 (se usado)
+- MySQL: 3306 (root/root)
+- Redis: 6379
 
-Obs: na primeira execução o container do backend irá gerar um projeto Laravel automaticamente (se não houver código no `backend/src`), rodar `composer install`, gerar APP_KEY e executar as migrations. O MySQL possui um script de inicialização que cria a base `sales` se necessário.
+## 1) Subir os containers
 
-## Estrutura do repositório (relevante)
-
-- `docker-compose.yml` — orquestra os serviços (backend, nginx, frontend, db, redis)
-- `nginx/nginx.conf` — configuração do Nginx para servir o Laravel
-- `backend/`
-  - `Dockerfile` — imagem PHP-FPM (composer + extensões)
-  - `start.sh` — script de inicialização do container backend (espera DB, cria DB, composer install, migrations, php-fpm)
-  - `src/` — código Laravel montado via volume (local)
-    - `.env` — variáveis de ambiente do Laravel (por padrão aponta para o MySQL do compose)
-- `frontend/`
-  - `Dockerfile` — imagem Node para Vue/Vite
-  - `app/` — diretório montado para o app Vue (criado automaticamente se vazio)
-- `mysql/init/` — scripts SQL executados na primeira inicialização do MySQL (cria DB `sales`)
-
-## Comportamento esperado no primeiro boot
-1. `docker compose up -d --build`
-2. O container `db` (MySQL) inicia e, se o volume estiver limpo, roda `mysql/init/01-create-db.sql` criando a base `sales`.
-3. O container `backend` aguarda o DB ficar saudável, executa `composer install` (se `vendor/` não existir), gera `APP_KEY`, cria as migrations de sessions/cache/queue (se necessário) e executa `php artisan migrate --force`.
-4. O `nginx` serve o `public/` do Laravel e direciona PHP para o container `backend:9000`.
-5. O `frontend` executa o servidor Vite em `:5173`.
-
-## Variáveis de ambiente importantes (veja `backend/src/.env`)
-- `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
-- `SESSION_DRIVER` (padrão: database) — o entrypoint cria a tabela caso necessário
-- `CACHE_STORE` (padrão: database)
-- `QUEUE_CONNECTION` (padrão: database)
-
-> Para desenvolvimento rápido você pode usar `SESSION_DRIVER=file`, `CACHE_STORE=file` e `QUEUE_CONNECTION=sync` se quiser evitar dependências de tabelas imediatamente.
-
-## Troubleshooting rápido
-- Se receber `502 Bad Gateway` em `http://localhost:8080`:
-  - Verifique se o backend está pronto: `docker compose logs -f backend`
-  - Aguardem as mensagens: `fpm is running, ready to handle connections` e `Running migrations`.
-  - Confirme que o `db` está `healthy`: `docker compose ps` e `docker compose logs -f db`.
-
-- Se migrations falharem por permissões em `storage`:
-  - Ajuste permissões localmente: `sudo chown -R $UID:$UID backend/src/storage backend/src/bootstrap/cache`
-  - Ou dentro do container: `docker compose exec backend bash -lc 'chown -R www-data:www-data storage bootstrap/cache || true'`
-
-- Caso o banco `sales` não exista (instalação limpa):
-  - O MySQL init cria automaticamente se o volume estiver limpo; caso contrário o `start.sh` do backend garante `CREATE DATABASE IF NOT EXISTS sales`.
-
-## Comandos úteis
-- Subir em background: `docker compose up -d --build`
-- Ver logs do backend: `docker compose logs -f backend`
-- Ver logs do db: `docker compose logs -f db`
-- Entrar no container backend: `docker compose exec backend bash` (ou sh)
-- Rodar artisan manualmente: `docker compose exec backend bash -lc 'php artisan migrate --force'`
-
-## Limpar e iniciar do zero
-1. Parar e remover containers/volumes locais:
-```bash
-docker compose down -v
-```
-2. Subir novamente:
 ```bash
 docker compose up -d --build
 ```
 
-## Notas finais
-- Este setup é pensado para facilitar a avaliação do desafio técnico: a pessoa avaliadora só precisa do Docker e de uma porta livre (8080 e 5173) e executar `docker compose up -d --build`..
+Aguarde os serviços ficarem de pé e siga para a configuração do Backend e Frontend.
+
+## 2) Configurar o Backend (Laravel)
+
+Entrar no container do backend:
+```bash
+docker exec -it sales-backend bash
+```
+
+Dentro do container, executar os comandos iniciais do Laravel:
+```bash
+# 2.1) Gerar .env a partir do exemplo
+cp .env.example .env
+
+# 2.2) Instalar dependências do Laravel
+composer install
+
+# 2.3) Gerar APP_KEY
+php artisan key:generate
+```
+
+Ajustes importantes no `.env` (se necessário):
+- DB_HOST=db, DB_DATABASE=sales, DB_USERNAME=root, DB_PASSWORD=root (compatível com docker-compose)
+- Mailer (Gmail) — ver guia abaixo
+
+Criar usuário admin via seeder:
+1) Edite `database/seeders/DatabaseSeeder.php` e altere o e-mail do usuário admin para o seu e-mail pessoal.
+2) Não cadastre vendedores/vendas no seeder (facilita testar envio de e-mail aos vendedores).
+3) Execute migrations + seed:
+```bash
+php artisan migrate:fresh --seed
+```
+
+### Mailer com Gmail
+O `.env.example` já está quase pronto para SMTP do Gmail. Gere uma Senha de App na sua conta Google (2FA habilitado) e coloque em `MAIL_PASSWORD`.
+
+Valores típicos:
+- `MAIL_MAILER=smtp`
+- `MAIL_HOST=smtp.gmail.com`
+- `MAIL_PORT=587`
+- `MAIL_ENCRYPTION=tls`
+- `MAIL_USERNAME=seu_email@gmail.com`
+- `MAIL_PASSWORD=senha_de_app`
+- `MAIL_FROM_ADDRESS=seu_email@gmail.com`
+- `MAIL_FROM_NAME="Cadastro de Vendas"`
+
+## 3) Configurar o Frontend (Vue 3 + Vite)
+
+Entrar no container do frontend:
+```bash
+docker exec -it sales-frontend bash
+```
+
+Instalar dependências:
+```bash
+npm install
+```
+
+O Vite dev server roda no container (porta 5173). Acesse:
+- Frontend: http://localhost:5173
+- Backend (API via Nginx): http://localhost:8080
+
+## 4) Comandos úteis
+
+- Subir/atualizar serviços:
+```bash
+docker compose up -d --build
+```
+
+- Entrar no backend e rodar Artisan:
+```bash
+docker exec -it sales-backend bash
+php artisan migrate:fresh --seed
+```
+
+- Entrar no frontend:
+```bash
+docker exec -it sales-frontend bash
+```
+
+- Reset geral (remove volumes):
+```bash
+docker compose down -v && docker compose up -d --build
+```
+
+## 5) Checklist do desafio — status
+
+Funcionalidades
+- [x] Cadastrar vendedores informando nome e e-mail
+- [x] Cadastrar vendas, informando o vendedor, o valor e a data da venda
+- [x] Listar todos os vendedores
+- [x] Listar todas as vendas
+- [x] Listar todas as vendas por vendedor
+
+Capacidades da aplicação
+- [x] Interagir com todos os endpoints da API
+- [x] Enviar um e-mail para o vendedor ao final de cada dia com a quantidade de vendas do dia, o valor total e o total das comissões
+- [x] Enviar um e-mail para o administrador com a soma de todas as vendas do dia
+- [x] Permitir que o administrador reenvie o e-mail de comissão a um vendedor
+- [ ] Implementar autenticação na API
+- [x] Implementar testes (unitários, integração)
+- [x] Implementar validação dos dados enviados
+- [x] Implementar uso de cache e fila
+- [x] Implementar uso de TypeScript e features modernas (PHP e JS)
+
+Observação: a parte de autenticação será detalhada por e-mail (mais informações e contexto).
