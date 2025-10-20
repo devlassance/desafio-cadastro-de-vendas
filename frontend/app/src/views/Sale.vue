@@ -123,14 +123,3 @@ async function fetchSellers() {
 }
 
 </script>
-
-<style scoped>
-.actions { margin-bottom: .5rem; }
-.row { display: flex; gap: 1rem; margin: .5rem 0; }
-label { display: flex; flex-direction: column; font-size: .9rem; }
-input { padding: .4rem .5rem; }
-
-select { padding: .4rem .5rem; }
-
-
-</style>
