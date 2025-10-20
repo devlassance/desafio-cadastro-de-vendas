@@ -30,5 +30,5 @@ interface BaseRepositoryContract
 
     public function firstOrCreate(array $array1, array $array2): Model;
 
-    public function getAll(int $totalPages = 10): LengthAwarePaginator;
+    public function getAll(int $perPage = 10): LengthAwarePaginator;
 }

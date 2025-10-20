@@ -12,7 +12,11 @@
     <tbody>
       <tr v-for="s in sales" :key="s.id">
         <td>{{ s.id }}</td>
-        <td>{{ s.seller_id }}</td>
+        <td>
+          <router-link :to="`/seller/${s.seller.id}`">
+          {{ s.seller.name }}
+          </router-link>
+        </td>
         <td>{{ currency(s.amount) }}</td>
         <td>{{ currency(s.commission) }}</td>
         <td>{{ formatDate(s.sale_date) }}</td>

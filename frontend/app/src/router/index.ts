@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 const Home = () => import('../components/HelloWorld.vue')
 const Sale = () => import('../views/Sale.vue')
 const Seller = () => import('../views/Seller.vue')
+const SellerDetail = () => import('../views/SellerDetail.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -23,6 +24,13 @@ const routes: RouteRecordRaw[] = [
     name: 'seller',
     component: Seller,
     meta: { title: 'Seller' }
+  },
+
+  {
+    path: '/seller/:id',
+    name: 'seller-detail',
+    component: () => SellerDetail,
+    meta: { title: 'Seller Detail' }
   }
 ]
 

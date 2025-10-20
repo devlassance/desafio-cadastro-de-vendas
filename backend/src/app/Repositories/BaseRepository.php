@@ -76,8 +76,8 @@ class BaseRepository implements BaseRepositoryContract
         return $this->model->firstOrCreate($array1, $array2);
     }
 
-    public function getAll(int $totalPages = 10): LengthAwarePaginator
+    public function getAll(int $perPage = 10): LengthAwarePaginator
     {
-        return $this->model::paginate($totalPages);
+        return $this->model::paginate($perPage);
     }
 }

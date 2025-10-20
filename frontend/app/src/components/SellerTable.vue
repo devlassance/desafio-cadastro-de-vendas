@@ -41,7 +41,7 @@ function formatDate(iso?: string) {
 
 const router = useRouter()
 function goto(id: number) {
-  router.push(`/sellers/${id}`)
+  router.push(`/seller/${id}`)
 }
 </script>
 

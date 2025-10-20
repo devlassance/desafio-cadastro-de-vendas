@@ -16,14 +16,16 @@ export async function listSellersForSelect(): Promise<SellerSelect[]> {
   return data
 }
 
-export async function getSeller(id: number): Promise<SellerDetail[]> {
-  const { data } = await api.get<SellerDetail[]>(`/sellers/${id}`)
-  if (Array.isArray(data)) return data
-  return data
+export async function getSeller(id: number): Promise<SellerDetail> {
+  // Some backends wrap payloads as { data: SellerDetail }
+  const resp = await api.get<SellerDetail | { data: SellerDetail }>(`/sellers/${id}`)
+  const raw: any = (resp as any)?.data
+  const unwrapped = (raw && typeof raw === 'object' && 'data' in raw) ? (raw as any).data : raw
+  return unwrapped as SellerDetail
 }
 
 export async function createSeller(payload: { name: string; email: string }) {
   return api.post('/sellers', payload)
 }
 
-export default { listSellers, listSellersForSelect, createSeller }
+export default { listSellers, listSellersForSelect, getSeller, createSeller }

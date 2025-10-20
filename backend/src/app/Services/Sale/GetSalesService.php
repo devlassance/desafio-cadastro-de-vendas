@@ -19,7 +19,7 @@ class GetSalesService
     public function execute(): LengthAwarePaginator
     {
         try {
-            return $this->saleRepository->getAll();
+            return $this->saleRepository->getAllWithSeller();
         } catch (Exception $e) {
             throw new Exception('Error retrieving sales: ' . $e->getMessage());
         }
