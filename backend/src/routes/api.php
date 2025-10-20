@@ -15,6 +15,7 @@ Route::group(['prefix' => 'sellers'], function () {
     Route::get('/for-select', [SellerController::class, 'showForSelect']);
     Route::post('/', [SellerController::class, 'store']);
     Route::get('/{id}', [SellerController::class, 'show']);
+    Route::get('/resend-email-sales/{id}', [SellerController::class, 'resendEmailSales']);
 });
 
 

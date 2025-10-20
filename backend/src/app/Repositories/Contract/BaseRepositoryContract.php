@@ -22,6 +22,8 @@ interface BaseRepositoryContract
 
     public function findBy(string $attribute, $value): Model;
 
+    public function findById(int $id): Model;
+
     public function updateOrCreate(array $dataFind, array $data): Model;
 
     public function findByOrNull(string $attribute, $value): ?Model;

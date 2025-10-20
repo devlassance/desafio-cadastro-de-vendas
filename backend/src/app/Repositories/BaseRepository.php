@@ -56,6 +56,11 @@ class BaseRepository implements BaseRepositoryContract
         return $this->model::where($attribute, $value)->firstOrFail();
     }
 
+    public function findById(int $id): Model
+    {
+        return $this->model::where('id', $id)->firstOrFail();
+    }
+
     public function updateOrCreate(array $dataFind, array $data): Model
     {
         return $this->model::updateOrCreate($dataFind, $data);

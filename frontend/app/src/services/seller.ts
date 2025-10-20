@@ -28,4 +28,13 @@ export async function createSeller(payload: { name: string; email: string }) {
   return api.post('/sellers', payload)
 }
 
-export default { listSellers, listSellersForSelect, getSeller, createSeller }
+export async function resendSellerDailyEmail(id: number): Promise<boolean> {
+  try {
+    const resp = await api.get(`/sellers/resend-email-sales/${id}`)
+    return resp.status === 200
+  } catch (e) {
+    return false
+  }
+}
+
+export default { listSellers, listSellersForSelect, getSeller, createSeller, resendSellerDailyEmail }

@@ -8,6 +8,7 @@ use App\Services\Seller\CreateSellersService;
 use App\Services\Seller\GetSellersForSelect;
 use App\Services\Seller\GetSellersService;
 use App\Services\Seller\GetSellersWithSalesService;
+use App\Services\Seller\ResendEmailSales;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,8 @@ class SellerController extends Controller
         private GetSellersService $getSellersService,
         private CreateSellersService $createSellersService,
         private GetSellersWithSalesService $getSellersWithSalesService,
-        private GetSellersForSelect $getSellersForSelect
+        private GetSellersForSelect $getSellersForSelect,
+        private ResendEmailSales $resendEmailSales
     )
     {
     }
@@ -73,6 +75,20 @@ class SellerController extends Controller
     public function showForSelect(): JsonResponse
     {
         return response()->json($this->getSellersForSelect->execute());
+    }
+
+    /**
+     * Resend sales email to the seller.
+     *
+     * @param int $id
+     * @return JsonResponse
+     *
+     * @throws Exception
+     */
+    public function resendEmailSales(int $id): JsonResponse
+    {
+        $this->resendEmailSales->execute($id);
+        return response()->json(['message' => 'E-mail resent successfully'], ResponseAlias::HTTP_OK);
     }
 
 }
